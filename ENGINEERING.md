@@ -19,10 +19,14 @@ termlens's semver gate is the clearest case. `cargo-semver-checks` infers how
 much to check from the version number, so a `0.10 → 0.11` bump reads as a major
 release and every check is skipped: a public function can be removed in the
 same pull request as the bump and the gate stays green. It also cannot see an
-item moved behind a feature flag, because the all-features view never loses it.
-The gate therefore forces the release type and checks three feature views, and
-it ships with three small model crates that exist only to prove it fails on a
-removed item and on a gated one. The two known blind spots are asserted as
+item moved behind a feature flag, because the all-features view never loses it,
+and no standard view sees an item moved from one feature to two. The gate
+therefore forces the release type and checks every feature on its own beside
+the default, explicit-only and all-features views. While a declared break waits
+for its release, every later change is checked again against the commit it
+lands on, so one declared break cannot carry a second. It ships with four small
+model crates that exist only to prove it fails on a removed item, a gated one,
+a moved one and a second break. The checker's three blind spots are asserted as
 blind spots, so a future checker version that closes one fails the self-test
 and the workaround gets reviewed instead of kept out of habit.
 
